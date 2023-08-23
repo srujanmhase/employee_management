@@ -58,7 +58,29 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  void addEmployee() {}
+  void addEmployee({required Employee employee}) {
+    var employees = List.of(state.employees);
+    var currentEmployees = List.of(state.currentEmployees);
+    var formerEmployees = List.of(state.previousEmployees);
+
+    employees.add(employee);
+
+    if (employee.endDate != null) {
+      formerEmployees.add(employee);
+    }
+
+    if (employee.endDate == null) {
+      currentEmployees.add(employee);
+    }
+
+    return emit(
+      state.copyWith(
+        employees: employees,
+        currentEmployees: currentEmployees,
+        previousEmployees: formerEmployees,
+      ),
+    );
+  }
 
   void deleteEmployee({required Employee employee}) {
     var employees = List.of(state.employees);
@@ -133,7 +155,59 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  void editEmployee() {}
+  void editEmployee({
+    required Employee employee,
+    String? name,
+    Status? status,
+    Designation? designation,
+    DateTime? startDate,
+    DateTime? endDate,
+  }) {
+    var employees = List.of(state.employees);
+    var currentEmployees = List.of(state.currentEmployees);
+    var formerEmployees = List.of(state.previousEmployees);
+
+    var selectedEmployee = employees
+        .where(
+          (element) => element.uuid == employee.uuid,
+        )
+        .first;
+
+    final updatedEmployee = selectedEmployee.copyWith(
+      name: name ?? selectedEmployee.name,
+      designation: designation ?? selectedEmployee.designation,
+      startDate: startDate ?? selectedEmployee.startDate,
+      endDate: endDate ?? selectedEmployee.endDate,
+    );
+
+    employees.removeWhere(
+      (element) => element.uuid == employee.uuid,
+    );
+    employees.add(updatedEmployee);
+
+    if (employee.endDate != null) {
+      formerEmployees.removeWhere((element) => element.uuid == employee.uuid);
+    }
+
+    if (employee.endDate == null) {
+      currentEmployees.removeWhere((element) => element.uuid == employee.uuid);
+    }
+
+    if (updatedEmployee.endDate != null) {
+      formerEmployees.add(updatedEmployee);
+    }
+    if (updatedEmployee.endDate == null) {
+      currentEmployees.add(updatedEmployee);
+    }
+
+    return emit(
+      state.copyWith(
+        employees: employees,
+        currentEmployees: currentEmployees,
+        previousEmployees: formerEmployees,
+      ),
+    );
+  }
 
   void resetDeleteFlag() => emit(state.copyWith(onDelete: false));
 }
