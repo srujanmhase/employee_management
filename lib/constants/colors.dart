@@ -7,3 +7,5 @@ const themeDark = Color(0xff323238);
 const themeGrey = Color(0xff949C9E);
 
 const scaffoldBg = Color(0xffF2F2F2);
+
+const borderColor = Color(0xffE5E5E5);
