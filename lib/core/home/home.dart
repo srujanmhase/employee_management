@@ -1,12 +1,16 @@
 import 'package:employee_management/constants/colors.dart';
 import 'package:employee_management/constants/fontstyles.dart';
+import 'package:employee_management/core/edit/view/edit_view.dart';
 import 'package:employee_management/core/home/employee_list.dart';
 import 'package:employee_management/cubit/app_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  static String path = '/';
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -44,7 +48,9 @@ class _HomePageState extends State<HomePage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
-          onPressed: () {},
+          onPressed: () {
+            context.pushNamed(EditPage.path);
+          },
           child: const Center(
             child: Icon(
               Icons.add,
