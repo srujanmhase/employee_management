@@ -1,4 +1,5 @@
 import 'package:employee_management/constants/colors.dart';
+import 'package:employee_management/core/edit/view/calendar_view.dart';
 import 'package:flutter/material.dart';
 
 class AppUtils {
@@ -47,10 +48,85 @@ class AppUtils {
     return false;
   }
 
+  static bool isNextMonday(DateTime? date) {
+    if (date == null) return false;
+
+    final now = DateTime.now();
+    final nextMonday = DateTime(now.year, now.month, now.day)
+        .add(Duration(days: 8 - now.weekday));
+
+    if (date.year == nextMonday.year &&
+        date.month == nextMonday.month &&
+        date.day == nextMonday.day) {
+      return true;
+    }
+
+    return false;
+  }
+
+  static bool isNextTuesday(DateTime? date) {
+    if (date == null) return false;
+
+    final now = DateTime.now();
+    final nextTuesday = DateTime(now.year, now.month, now.day)
+        .add(Duration(days: 9 - now.weekday));
+
+    if (date.year == nextTuesday.year &&
+        date.month == nextTuesday.month &&
+        date.day == nextTuesday.day) {
+      return true;
+    }
+    return false;
+  }
+
+  static bool isAfterOneWeek(DateTime? date) {
+    if (date == null) return false;
+
+    final now = DateTime.now();
+    final afterOneWeek = DateTime(now.year, now.month, now.day).add(
+      const Duration(days: 7),
+    );
+
+    if (date.year == afterOneWeek.year &&
+        date.month == afterOneWeek.month &&
+        date.day == afterOneWeek.day) {
+      return true;
+    }
+    return false;
+  }
+
   static String formatDate(DateTime? date) {
     if (date == null) return '';
     final val =
-        '${date.day.toString()} ${monthFromInt(date.month)} ${date.year.toString()}';
+        '${date.day.toString()} ${monthFromInt(date.month).substring(0, 3)} ${date.year.toString()}';
     return val;
   }
+
+  static DateTime? afterSome({required Selectors selector}) {
+    final date = DateTime.now();
+
+    if (selector == Selectors.today) {
+      return DateTime.now();
+    }
+
+    if (selector == Selectors.noDate) {
+      return null;
+    }
+
+    final newDate = date.add(
+      selector == Selectors.afterOneWeek
+          ? const Duration(days: 7)
+          : Duration(days: selector.val - date.weekday),
+    );
+    return newDate;
+  }
+}
+
+enum CustomDay {
+  nextMonday(val: 8),
+  nextTuesday(val: 9),
+  after1Week(val: 7);
+
+  const CustomDay({required this.val});
+  final int val;
 }

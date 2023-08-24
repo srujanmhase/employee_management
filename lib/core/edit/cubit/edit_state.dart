@@ -8,5 +8,8 @@ class EditState with _$EditState {
     Designation? designation,
     DateTime? startTime,
     DateTime? endTime,
+    Selectors? selector,
+    DateTime? startTimeTemp,
+    DateTime? endTimeTemp,
   }) = _EditState;
 }

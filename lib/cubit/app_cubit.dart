@@ -157,11 +157,11 @@ class AppCubit extends Cubit<AppState> {
 
   void editEmployee({
     required Employee employee,
-    String? name,
+    required String name,
     Status? status,
-    Designation? designation,
-    DateTime? startDate,
-    DateTime? endDate,
+    required Designation designation,
+    required DateTime startDate,
+    required DateTime? endDate,
   }) {
     var employees = List.of(state.employees);
     var currentEmployees = List.of(state.currentEmployees);
@@ -174,10 +174,10 @@ class AppCubit extends Cubit<AppState> {
         .first;
 
     final updatedEmployee = selectedEmployee.copyWith(
-      name: name ?? selectedEmployee.name,
-      designation: designation ?? selectedEmployee.designation,
-      startDate: startDate ?? selectedEmployee.startDate,
-      endDate: endDate ?? selectedEmployee.endDate,
+      name: name,
+      designation: designation,
+      startDate: startDate,
+      endDate: endDate,
     );
 
     employees.removeWhere(

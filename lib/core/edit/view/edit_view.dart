@@ -1,6 +1,7 @@
 import 'package:employee_management/constants/colors.dart';
 import 'package:employee_management/constants/fontstyles.dart';
 import 'package:employee_management/core/edit/cubit/edit_cubit.dart';
+import 'package:employee_management/core/edit/view/calendar_view.dart';
 import 'package:employee_management/core/edit/view/selector.dart';
 import 'package:employee_management/cubit/app_cubit.dart';
 import 'package:employee_management/models/designation.dart';
@@ -71,9 +72,9 @@ class _EditPageState extends State<EditPage> {
     if (widget.employee != null) {
       context.read<AppCubit>().editEmployee(
             employee: widget.employee!,
-            name: context.read<EditCubit>().state.name,
-            designation: context.read<EditCubit>().state.designation,
-            startDate: context.read<EditCubit>().state.startTime,
+            name: context.read<EditCubit>().state.name!,
+            designation: context.read<EditCubit>().state.designation!,
+            startDate: context.read<EditCubit>().state.startTime!,
             endDate: context.read<EditCubit>().state.endTime,
           );
     }
@@ -81,6 +82,7 @@ class _EditPageState extends State<EditPage> {
     if (widget.employee == null) {
       context.read<AppCubit>().addEmployee(employee: employee);
     }
+    context.pop();
   }
 
   void onShowBottomSheet() {
@@ -128,6 +130,27 @@ class _EditPageState extends State<EditPage> {
                   )
                   .toList()
             ],
+          ),
+        );
+      },
+    );
+  }
+
+  void onShowCalendar(EditCubit cubit, Type type, List<Selectors> selectors) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (modalcontext) {
+        return BlocProvider.value(
+          value: cubit,
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: CalendarSelectionView(
+              selectors: selectors,
+              type: type,
+            ),
           ),
         );
       },
@@ -218,7 +241,16 @@ class _EditPageState extends State<EditPage> {
                   children: [
                     Expanded(
                       child: SelectorWidget(
-                        onTap: onShowBottomSheet,
+                        onTap: () => onShowCalendar(
+                          context.read<EditCubit>(),
+                          Type.start,
+                          const [
+                            Selectors.today,
+                            Selectors.nextMonday,
+                            Selectors.nextTuesday,
+                            Selectors.afterOneWeek
+                          ],
+                        ),
                         leading: const Icon(Icons.event, color: themeBlue),
                         content: state.startTime == null
                             ? Text(
@@ -241,21 +273,27 @@ class _EditPageState extends State<EditPage> {
                       ),
                     ),
                     Expanded(
-                      child: SelectorWidget(
-                        onTap: onShowBottomSheet,
-                        leading: const Icon(Icons.event, color: themeBlue),
-                        content: state.endTime == null
-                            ? Text(
-                                'No Date',
-                                style: hintStyle.copyWith(fontSize: 14),
-                              )
-                            : Text(
-                                AppUtils.isToday(state.endTime)
-                                    ? 'Today'
-                                    : AppUtils.formatDate(state.endTime),
-                                style: formText,
-                              ),
-                      ),
+                      child: Builder(builder: (context) {
+                        return SelectorWidget(
+                          onTap: () => onShowCalendar(
+                              context.read<EditCubit>(), Type.end, const [
+                            Selectors.noDate,
+                            Selectors.today,
+                          ]),
+                          leading: const Icon(Icons.event, color: themeBlue),
+                          content: state.endTime == null
+                              ? Text(
+                                  'No Date',
+                                  style: hintStyle.copyWith(fontSize: 14),
+                                )
+                              : Text(
+                                  AppUtils.isToday(state.endTime)
+                                      ? 'Today'
+                                      : AppUtils.formatDate(state.endTime),
+                                  style: formText,
+                                ),
+                        );
+                      }),
                     ),
                   ],
                 )

@@ -21,6 +21,9 @@ mixin _$EditState {
   Designation? get designation => throw _privateConstructorUsedError;
   DateTime? get startTime => throw _privateConstructorUsedError;
   DateTime? get endTime => throw _privateConstructorUsedError;
+  Selectors? get selector => throw _privateConstructorUsedError;
+  DateTime? get startTimeTemp => throw _privateConstructorUsedError;
+  DateTime? get endTimeTemp => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EditStateCopyWith<EditState> get copyWith =>
@@ -37,7 +40,10 @@ abstract class $EditStateCopyWith<$Res> {
       String? name,
       Designation? designation,
       DateTime? startTime,
-      DateTime? endTime});
+      DateTime? endTime,
+      Selectors? selector,
+      DateTime? startTimeTemp,
+      DateTime? endTimeTemp});
 
   $EmployeeCopyWith<$Res>? get employee;
 }
@@ -60,6 +66,9 @@ class _$EditStateCopyWithImpl<$Res, $Val extends EditState>
     Object? designation = freezed,
     Object? startTime = freezed,
     Object? endTime = freezed,
+    Object? selector = freezed,
+    Object? startTimeTemp = freezed,
+    Object? endTimeTemp = freezed,
   }) {
     return _then(_value.copyWith(
       employee: freezed == employee
@@ -81,6 +90,18 @@ class _$EditStateCopyWithImpl<$Res, $Val extends EditState>
       endTime: freezed == endTime
           ? _value.endTime
           : endTime // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      selector: freezed == selector
+          ? _value.selector
+          : selector // ignore: cast_nullable_to_non_nullable
+              as Selectors?,
+      startTimeTemp: freezed == startTimeTemp
+          ? _value.startTimeTemp
+          : startTimeTemp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      endTimeTemp: freezed == endTimeTemp
+          ? _value.endTimeTemp
+          : endTimeTemp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
     ) as $Val);
   }
@@ -110,7 +131,10 @@ abstract class _$$_EditStateCopyWith<$Res> implements $EditStateCopyWith<$Res> {
       String? name,
       Designation? designation,
       DateTime? startTime,
-      DateTime? endTime});
+      DateTime? endTime,
+      Selectors? selector,
+      DateTime? startTimeTemp,
+      DateTime? endTimeTemp});
 
   @override
   $EmployeeCopyWith<$Res>? get employee;
@@ -132,6 +156,9 @@ class __$$_EditStateCopyWithImpl<$Res>
     Object? designation = freezed,
     Object? startTime = freezed,
     Object? endTime = freezed,
+    Object? selector = freezed,
+    Object? startTimeTemp = freezed,
+    Object? endTimeTemp = freezed,
   }) {
     return _then(_$_EditState(
       employee: freezed == employee
@@ -154,6 +181,18 @@ class __$$_EditStateCopyWithImpl<$Res>
           ? _value.endTime
           : endTime // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      selector: freezed == selector
+          ? _value.selector
+          : selector // ignore: cast_nullable_to_non_nullable
+              as Selectors?,
+      startTimeTemp: freezed == startTimeTemp
+          ? _value.startTimeTemp
+          : startTimeTemp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      endTimeTemp: freezed == endTimeTemp
+          ? _value.endTimeTemp
+          : endTimeTemp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -166,7 +205,10 @@ class _$_EditState implements _EditState {
       this.name,
       this.designation,
       this.startTime,
-      this.endTime});
+      this.endTime,
+      this.selector,
+      this.startTimeTemp,
+      this.endTimeTemp});
 
   @override
   final Employee? employee;
@@ -178,10 +220,16 @@ class _$_EditState implements _EditState {
   final DateTime? startTime;
   @override
   final DateTime? endTime;
+  @override
+  final Selectors? selector;
+  @override
+  final DateTime? startTimeTemp;
+  @override
+  final DateTime? endTimeTemp;
 
   @override
   String toString() {
-    return 'EditState(employee: $employee, name: $name, designation: $designation, startTime: $startTime, endTime: $endTime)';
+    return 'EditState(employee: $employee, name: $name, designation: $designation, startTime: $startTime, endTime: $endTime, selector: $selector, startTimeTemp: $startTimeTemp, endTimeTemp: $endTimeTemp)';
   }
 
   @override
@@ -196,12 +244,18 @@ class _$_EditState implements _EditState {
                 other.designation == designation) &&
             (identical(other.startTime, startTime) ||
                 other.startTime == startTime) &&
-            (identical(other.endTime, endTime) || other.endTime == endTime));
+            (identical(other.endTime, endTime) || other.endTime == endTime) &&
+            (identical(other.selector, selector) ||
+                other.selector == selector) &&
+            (identical(other.startTimeTemp, startTimeTemp) ||
+                other.startTimeTemp == startTimeTemp) &&
+            (identical(other.endTimeTemp, endTimeTemp) ||
+                other.endTimeTemp == endTimeTemp));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, employee, name, designation, startTime, endTime);
+  int get hashCode => Object.hash(runtimeType, employee, name, designation,
+      startTime, endTime, selector, startTimeTemp, endTimeTemp);
 
   @JsonKey(ignore: true)
   @override
@@ -216,7 +270,10 @@ abstract class _EditState implements EditState {
       final String? name,
       final Designation? designation,
       final DateTime? startTime,
-      final DateTime? endTime}) = _$_EditState;
+      final DateTime? endTime,
+      final Selectors? selector,
+      final DateTime? startTimeTemp,
+      final DateTime? endTimeTemp}) = _$_EditState;
 
   @override
   Employee? get employee;
@@ -228,6 +285,12 @@ abstract class _EditState implements EditState {
   DateTime? get startTime;
   @override
   DateTime? get endTime;
+  @override
+  Selectors? get selector;
+  @override
+  DateTime? get startTimeTemp;
+  @override
+  DateTime? get endTimeTemp;
   @override
   @JsonKey(ignore: true)
   _$$_EditStateCopyWith<_$_EditState> get copyWith =>
