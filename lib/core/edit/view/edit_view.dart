@@ -1,10 +1,12 @@
 import 'package:employee_management/constants/colors.dart';
 import 'package:employee_management/constants/fontstyles.dart';
 import 'package:employee_management/core/edit/cubit/edit_cubit.dart';
+import 'package:employee_management/core/edit/view/selector.dart';
 import 'package:employee_management/cubit/app_cubit.dart';
 import 'package:employee_management/models/designation.dart';
 import 'package:employee_management/models/employee.dart';
 import 'package:employee_management/models/status.dart';
+import 'package:employee_management/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -34,6 +36,102 @@ class _EditPageState extends State<EditPage> {
         context.read<EditCubit>().updateEndDate(widget.employee!.endDate!);
       }
     }
+
+    if (widget.employee == null) {
+      context.read<EditCubit>().updateStartDate(DateTime.now());
+    }
+  }
+
+  void onSavePressed() {
+    var empty = <String>[];
+    if (_nameController.text.isEmpty) empty.add('Name');
+    if (context.read<EditCubit>().state.designation == null) {
+      empty.add('Designation');
+    }
+
+    if (empty.isNotEmpty) {
+      AppUtils.showSnackbar(
+        context: context,
+        message:
+            'Cannot add as the following field(s) are empty: ${empty.join(', ')}',
+        color: Colors.red,
+      );
+      return;
+    }
+
+    final employee = Employee(
+      uuid: '',
+      status: Status.active,
+      name: context.read<EditCubit>().state.name!,
+      designation: context.read<EditCubit>().state.designation!,
+      startDate: context.read<EditCubit>().state.startTime!,
+      endDate: context.read<EditCubit>().state.endTime,
+    );
+
+    if (widget.employee != null) {
+      context.read<AppCubit>().editEmployee(
+            employee: widget.employee!,
+            name: context.read<EditCubit>().state.name,
+            designation: context.read<EditCubit>().state.designation,
+            startDate: context.read<EditCubit>().state.startTime,
+            endDate: context.read<EditCubit>().state.endTime,
+          );
+    }
+
+    if (widget.employee == null) {
+      context.read<AppCubit>().addEmployee(employee: employee);
+    }
+  }
+
+  void onShowBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (modalContext) {
+        return Container(
+          height: 211,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+          child: Column(
+            children: [
+              ...Designation.values
+                  .toList()
+                  .asMap()
+                  .entries
+                  .map(
+                    (e) => InkWell(
+                      onTap: () {
+                        context.read<EditCubit>().updateDesignation(e.value);
+                        context.pop();
+                      },
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Text(
+                              e.value.value,
+                              style: bottomSheetText,
+                            ),
+                          ),
+                          Container(
+                            height: 1,
+                            color: Colors.black.withOpacity(0.2),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList()
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -97,104 +195,69 @@ class _EditPageState extends State<EditPage> {
                   ),
                 ),
                 const SizedBox(height: 16),
-                Builder(builder: (context) {
-                  return InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (modalContext) {
-                          return Container(
-                            height: 211,
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(16),
-                                topRight: Radius.circular(16),
-                              ),
-                            ),
-                            child: Column(
-                              children: [
-                                ...Designation.values
-                                    .toList()
-                                    .asMap()
-                                    .entries
-                                    .map(
-                                      (e) => InkWell(
-                                        onTap: () {
-                                          context
-                                              .read<EditCubit>()
-                                              .updateDesignation(e.value);
-                                          context.pop();
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.all(16),
-                                              child: Text(
-                                                e.value.value,
-                                                style: bottomSheetText,
-                                              ),
-                                            ),
-                                            Container(
-                                              height: 1,
-                                              color:
-                                                  Colors.black.withOpacity(0.2),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                    .toList()
-                              ],
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: Container(
-                      height: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(4),
-                        border: Border.all(
-                          color: borderColor,
+                SelectorWidget(
+                  onTap: onShowBottomSheet,
+                  leading: const Icon(Icons.work_outline, color: themeBlue),
+                  content: state.designation == null
+                      ? Text(
+                          'Select Role',
+                          style: hintStyle,
+                        )
+                      : Text(
+                          state.designation?.value ?? '',
+                          style: formText,
                         ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(Icons.work_outline,
-                                    color: themeBlue),
-                                const SizedBox(width: 12),
-                                if (state.designation == null)
-                                  Text(
-                                    'Select Role',
-                                    style: hintStyle,
-                                  ),
-                                if (state.designation != null)
-                                  Text(
-                                    state.designation?.value ?? '',
-                                    style: formText,
-                                  ),
-                              ],
-                            ),
-                            const Icon(
-                              Icons.arrow_drop_down,
-                              color: themeBlue,
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }),
+                  trailing: const Icon(
+                    Icons.arrow_drop_down,
+                    color: themeBlue,
+                  ),
+                ),
                 const SizedBox(height: 16),
                 Row(
-                  children: [Container()],
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: SelectorWidget(
+                        onTap: onShowBottomSheet,
+                        leading: const Icon(Icons.event, color: themeBlue),
+                        content: state.startTime == null
+                            ? Text(
+                                'No Date',
+                                style: hintStyle,
+                              )
+                            : Text(
+                                AppUtils.isToday(state.startTime)
+                                    ? 'Today'
+                                    : AppUtils.formatDate(state.startTime),
+                                style: formText,
+                              ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 50,
+                      child: Icon(
+                        Icons.arrow_forward,
+                        color: themeBlue,
+                      ),
+                    ),
+                    Expanded(
+                      child: SelectorWidget(
+                        onTap: onShowBottomSheet,
+                        leading: const Icon(Icons.event, color: themeBlue),
+                        content: state.endTime == null
+                            ? Text(
+                                'No Date',
+                                style: hintStyle.copyWith(fontSize: 14),
+                              )
+                            : Text(
+                                AppUtils.isToday(state.endTime)
+                                    ? 'Today'
+                                    : AppUtils.formatDate(state.endTime),
+                                style: formText,
+                              ),
+                      ),
+                    ),
+                  ],
                 )
               ],
             ),
@@ -231,36 +294,7 @@ class _EditPageState extends State<EditPage> {
                     style: const ButtonStyle(
                       backgroundColor: MaterialStatePropertyAll(themeBlue),
                     ),
-                    onPressed: () {
-                      if (_nameController.text.isEmpty) return;
-                      final employee = Employee(
-                        uuid: '',
-                        status: Status.active,
-                        name: context.read<EditCubit>().state.name!,
-                        designation:
-                            context.read<EditCubit>().state.designation!,
-                        startDate: context.read<EditCubit>().state.startTime!,
-                        endDate: context.read<EditCubit>().state.endTime,
-                      );
-
-                      if (widget.employee != null) {
-                        context.read<AppCubit>().editEmployee(
-                              employee: widget.employee!,
-                              name: context.read<EditCubit>().state.name,
-                              designation:
-                                  context.read<EditCubit>().state.designation,
-                              startDate:
-                                  context.read<EditCubit>().state.startTime,
-                              endDate: context.read<EditCubit>().state.endTime,
-                            );
-                      }
-
-                      if (widget.employee == null) {
-                        context
-                            .read<AppCubit>()
-                            .addEmployee(employee: employee);
-                      }
-                    },
+                    onPressed: onSavePressed,
                     child: Text(
                       'Save',
                       style: formSubmitPrimary,
