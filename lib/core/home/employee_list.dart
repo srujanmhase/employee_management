@@ -1,7 +1,7 @@
-import 'package:employee_management/constants/colors.dart';
 import 'package:employee_management/constants/fontstyles.dart';
 import 'package:employee_management/core/home/employee_list_card.dart';
 import 'package:employee_management/cubit/app_cubit.dart';
+import 'package:employee_management/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,18 +18,16 @@ class _EmployeeListState extends State<EmployeeList> {
     return BlocConsumer<AppCubit, AppState>(
       listener: (context, state) {
         if (state.onDelete) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              backgroundColor: themeDark,
-              action: SnackBarAction(
-                label: 'Undo',
-                onPressed: () {
-                  context
-                      .read<AppCubit>()
-                      .undoDelete(uuid: state.lastDeletedUuid ?? '');
-                },
-              ),
-              content: const Text('Employee data has been deleted'),
+          AppUtils.showSnackbar(
+            context: context,
+            message: 'Employee data has been deleted',
+            action: SnackBarAction(
+              label: 'Undo',
+              onPressed: () {
+                context
+                    .read<AppCubit>()
+                    .undoDelete(uuid: state.lastDeletedUuid ?? '');
+              },
             ),
           );
           context.read<AppCubit>().resetDeleteFlag();

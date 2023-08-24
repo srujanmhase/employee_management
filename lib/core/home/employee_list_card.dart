@@ -2,7 +2,7 @@ import 'package:employee_management/constants/fontstyles.dart';
 import 'package:employee_management/core/edit/view/edit_view.dart';
 import 'package:employee_management/cubit/app_cubit.dart';
 import 'package:employee_management/models/employee.dart';
-import 'package:employee_management/utils/month_helper.dart';
+import 'package:employee_management/utils/app_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_swipe_action_cell/flutter_swipe_action_cell.dart';
@@ -21,9 +21,9 @@ class _EmployeeCardState extends State<EmployeeCard> {
   @override
   Widget build(BuildContext context) {
     final fromDate =
-        '${widget.employee.startDate.day} ${monthFromInt(widget.employee.startDate.month)}, ${widget.employee.startDate.year}';
+        '${widget.employee.startDate.day} ${AppUtils.monthFromInt(widget.employee.startDate.month)}, ${widget.employee.startDate.year}';
     final endDate =
-        '${widget.employee.endDate?.day ?? ''} ${monthFromInt(widget.employee.endDate?.month ?? 0)}, ${widget.employee.endDate?.year ?? ''}';
+        '${widget.employee.endDate?.day ?? ''} ${AppUtils.monthFromInt(widget.employee.endDate?.month ?? 0)}, ${widget.employee.endDate?.year ?? ''}';
     return SwipeActionCell(
       key: ObjectKey(widget.employee),
       trailingActions: <SwipeAction>[
