@@ -20,7 +20,7 @@ class AppCubit extends Cubit<AppState> {
 
     final employees = await databaseService.fetchActiveEmployees();
 
-    for (final employee in (employees ?? [])) {
+    for (final employee in (employees ?? <Employee>[])) {
       if (employee.endDate != null && employee.status != Status.deleted) {
         formerEmployees.add(employee!);
       }
