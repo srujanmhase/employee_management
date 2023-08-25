@@ -31,8 +31,11 @@ class _EditPageState extends State<EditPage> {
     _nameController.text = widget.employee?.name ?? '';
     if (widget.employee != null) {
       context.read<EditCubit>().updateNameString(widget.employee?.name ?? '');
-      context.read<EditCubit>().updateDesignation(widget.employee!.designation);
-      context.read<EditCubit>().updateStartDate(widget.employee!.startDate);
+      context.read<EditCubit>().updateDesignation(
+          widget.employee!.designation ?? Designation.flutterDeveloper);
+      context
+          .read<EditCubit>()
+          .updateStartDate(widget.employee!.startDate ?? DateTime.now());
       if (widget.employee?.endDate != null) {
         context.read<EditCubit>().updateEndDate(widget.employee!.endDate!);
       }
@@ -60,14 +63,13 @@ class _EditPageState extends State<EditPage> {
       return;
     }
 
-    final employee = Employee(
-      uuid: '',
-      status: Status.active,
-      name: context.read<EditCubit>().state.name!,
-      designation: context.read<EditCubit>().state.designation!,
-      startDate: context.read<EditCubit>().state.startTime!,
-      endDate: context.read<EditCubit>().state.endTime,
-    );
+    final employee = Employee()
+      ..uuid = ''
+      ..status = Status.active
+      ..name = context.read<EditCubit>().state.name!
+      ..designation = context.read<EditCubit>().state.designation!
+      ..startDate = context.read<EditCubit>().state.startTime!
+      ..endDate = context.read<EditCubit>().state.endTime;
 
     if (widget.employee != null) {
       context.read<AppCubit>().editEmployee(

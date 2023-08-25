@@ -1,9 +1,11 @@
 import 'package:employee_management/cubit/app_cubit.dart';
 import 'package:employee_management/services/router/router.dart';
+import 'package:employee_management/services/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
+  ServiceLocator.init();
   runApp(const MyApp());
 }
 

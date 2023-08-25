@@ -21,7 +21,7 @@ class _EmployeeCardState extends State<EmployeeCard> {
   @override
   Widget build(BuildContext context) {
     final fromDate =
-        '${widget.employee.startDate.day} ${AppUtils.monthFromInt(widget.employee.startDate.month)}, ${widget.employee.startDate.year}';
+        '${widget.employee.startDate?.day} ${AppUtils.monthFromInt(widget.employee.startDate?.month ?? 1)}, ${widget.employee.startDate?.year}';
     final endDate =
         '${widget.employee.endDate?.day ?? ''} ${AppUtils.monthFromInt(widget.employee.endDate?.month ?? 0)}, ${widget.employee.endDate?.year ?? ''}';
     return SwipeActionCell(
@@ -52,12 +52,12 @@ class _EmployeeCardState extends State<EmployeeCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  widget.employee.name,
+                  widget.employee.name ?? '',
                   style: employeeCardName,
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  widget.employee.designation.value,
+                  widget.employee.designation?.value ?? '',
                   style: employeeCardDesignation,
                 ),
                 const SizedBox(height: 8),

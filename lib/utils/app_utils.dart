@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:employee_management/constants/colors.dart';
 import 'package:employee_management/core/edit/view/calendar_view.dart';
 import 'package:flutter/material.dart';
@@ -119,6 +120,17 @@ class AppUtils {
           : Duration(days: selector.val - date.weekday),
     );
     return newDate;
+  }
+
+  static String generateRandomAlphaNumeric(int length) {
+    const chars =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    final random = Random();
+    final codeUnits = List.generate(
+      length,
+      (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+    );
+    return String.fromCharCodes(codeUnits);
   }
 }
 

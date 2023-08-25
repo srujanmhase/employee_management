@@ -44,8 +44,6 @@ abstract class $EditStateCopyWith<$Res> {
       Selectors? selector,
       DateTime? startTimeTemp,
       DateTime? endTimeTemp});
-
-  $EmployeeCopyWith<$Res>? get employee;
 }
 
 /// @nodoc
@@ -105,18 +103,6 @@ class _$EditStateCopyWithImpl<$Res, $Val extends EditState>
               as DateTime?,
     ) as $Val);
   }
-
-  @override
-  @pragma('vm:prefer-inline')
-  $EmployeeCopyWith<$Res>? get employee {
-    if (_value.employee == null) {
-      return null;
-    }
-
-    return $EmployeeCopyWith<$Res>(_value.employee!, (value) {
-      return _then(_value.copyWith(employee: value) as $Val);
-    });
-  }
 }
 
 /// @nodoc
@@ -135,9 +121,6 @@ abstract class _$$_EditStateCopyWith<$Res> implements $EditStateCopyWith<$Res> {
       Selectors? selector,
       DateTime? startTimeTemp,
       DateTime? endTimeTemp});
-
-  @override
-  $EmployeeCopyWith<$Res>? get employee;
 }
 
 /// @nodoc

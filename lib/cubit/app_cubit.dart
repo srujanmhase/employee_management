@@ -15,30 +15,30 @@ class AppCubit extends Cubit<AppState> {
     var currentEmployees = <Employee>[];
     var formerEmployees = <Employee>[];
 
-    for (int i = 0; i < 5; i++) {
-      employees.add(
-        Employee(
-          uuid: i.toString(),
-          status: Status.active,
-          name: 'Srujan ${i.toString()}',
-          designation: Designation.flutterDeveloper,
-          startDate: DateTime.now(),
-        ),
-      );
-    }
+    // for (int i = 0; i < 5; i++) {
+    //   employees.add(
+    //     Employee(
+    //       uuid: i.toString(),
+    //       status: Status.active,
+    //       name: 'Srujan ${i.toString()}',
+    //       designation: Designation.flutterDeveloper,
+    //       startDate: DateTime.now(),
+    //     ),
+    //   );
+    // }
 
-    for (int i = 0; i < 5; i++) {
-      employees.add(
-        Employee(
-          uuid: {i + 5}.toString(),
-          status: Status.active,
-          name: 'Srujan ${(i + 5).toString()}',
-          designation: Designation.flutterDeveloper,
-          startDate: DateTime.now(),
-          endDate: DateTime.now(),
-        ),
-      );
-    }
+    // for (int i = 0; i < 5; i++) {
+    //   employees.add(
+    //     Employee(
+    //       uuid: {i + 5}.toString(),
+    //       status: Status.active,
+    //       name: 'Srujan ${(i + 5).toString()}',
+    //       designation: Designation.flutterDeveloper,
+    //       startDate: DateTime.now(),
+    //       endDate: DateTime.now(),
+    //     ),
+    //   );
+    // }
 
     for (final employee in employees) {
       if (employee.endDate != null && employee.status != Status.deleted) {
@@ -99,10 +99,10 @@ class AppCubit extends Cubit<AppState> {
         .where(
           (element) => element == employee,
         )
-        .first
-        .copyWith(
-          status: Status.deleted,
-        );
+        .first;
+    // .copyWith(
+    //   status: Status.deleted,
+    // );
 
     employees.removeWhere(
       (element) => element == employee,
@@ -129,10 +129,10 @@ class AppCubit extends Cubit<AppState> {
         .where(
           (element) => element.uuid == uuid,
         )
-        .first
-        .copyWith(
-          status: Status.active,
-        );
+        .first;
+    // .copyWith(
+    //   status: Status.active,
+    // );
 
     employees.removeWhere(
       (element) => element.uuid == uuid,
@@ -173,12 +173,13 @@ class AppCubit extends Cubit<AppState> {
         )
         .first;
 
-    final updatedEmployee = selectedEmployee.copyWith(
-      name: name,
-      designation: designation,
-      startDate: startDate,
-      endDate: endDate,
-    );
+    final updatedEmployee = selectedEmployee;
+    // .copyWith(
+    //   name: name,
+    //   designation: designation,
+    //   startDate: startDate,
+    //   endDate: endDate,
+    // );
 
     employees.removeWhere(
       (element) => element.uuid == employee.uuid,

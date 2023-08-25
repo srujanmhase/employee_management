@@ -1,3 +1,4 @@
+import 'package:employee_management/models/employee.dart';
 import 'package:get_it/get_it.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -9,7 +10,7 @@ class ServiceLocator {
     instance.registerSingletonAsync<Isar>(() async {
       final dir = await getApplicationDocumentsDirectory();
       final isar = await Isar.open(
-        [],
+        [EmployeeSchema],
         directory: dir.path,
       );
       return isar;
