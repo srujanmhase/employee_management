@@ -64,7 +64,7 @@ class _EditPageState extends State<EditPage> {
     }
 
     final employee = Employee()
-      ..uuid = ''
+      ..uuid = AppUtils.generateRandomAlphaNumeric(16)
       ..status = Status.active
       ..name = context.read<EditCubit>().state.name!
       ..designation = context.read<EditCubit>().state.designation!
@@ -208,11 +208,26 @@ class _EditPageState extends State<EditPage> {
                         Icons.person_outline,
                         color: themeBlue,
                       ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: borderColor,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: borderColor,
+                        ),
+                      ),
                       floatingLabelBehavior: FloatingLabelBehavior.never,
                       contentPadding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(4),
                         borderSide: const BorderSide(
+                          width: 1,
                           color: borderColor,
                         ),
                       ),

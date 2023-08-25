@@ -1,5 +1,6 @@
 import 'package:employee_management/models/designation.dart';
 import 'package:employee_management/models/status.dart';
+import 'package:employee_management/services/database/local_database_adapter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:employee_management/models/employee.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -8,110 +9,83 @@ part 'app_state.dart';
 part 'app_cubit.freezed.dart';
 
 class AppCubit extends Cubit<AppState> {
-  AppCubit() : super(const AppState(onDelete: false));
+  AppCubit(this.databaseService)
+      : super(const AppState(onDelete: false, isLoading: true));
 
-  void initialiseList() {
-    var employees = <Employee>[];
+  LocalDatabaseAdapter databaseService;
+
+  void initialiseList() async {
     var currentEmployees = <Employee>[];
     var formerEmployees = <Employee>[];
 
-    // for (int i = 0; i < 5; i++) {
-    //   employees.add(
-    //     Employee(
-    //       uuid: i.toString(),
-    //       status: Status.active,
-    //       name: 'Srujan ${i.toString()}',
-    //       designation: Designation.flutterDeveloper,
-    //       startDate: DateTime.now(),
-    //     ),
-    //   );
-    // }
+    final employees = await databaseService.fetchActiveEmployees();
 
-    // for (int i = 0; i < 5; i++) {
-    //   employees.add(
-    //     Employee(
-    //       uuid: {i + 5}.toString(),
-    //       status: Status.active,
-    //       name: 'Srujan ${(i + 5).toString()}',
-    //       designation: Designation.flutterDeveloper,
-    //       startDate: DateTime.now(),
-    //       endDate: DateTime.now(),
-    //     ),
-    //   );
-    // }
-
-    for (final employee in employees) {
+    for (final employee in (employees ?? [])) {
       if (employee.endDate != null && employee.status != Status.deleted) {
-        formerEmployees.add(employee);
+        formerEmployees.add(employee!);
       }
       if (employee.endDate == null && employee.status != Status.deleted) {
-        currentEmployees.add(employee);
+        currentEmployees.add(employee!);
       }
     }
 
     return emit(
       state.copyWith(
-        employees: employees,
+        employees: employees ?? [],
+        currentEmployees: currentEmployees,
+        previousEmployees: formerEmployees,
+        isLoading: false,
+      ),
+    );
+  }
+
+  void addEmployee({required Employee employee}) async {
+    await databaseService.addEmployee(employee);
+    final employees = await databaseService.fetchActiveEmployees();
+
+    var currentEmployees = <Employee>[];
+    var formerEmployees = <Employee>[];
+
+    for (final employee in (employees ?? [])) {
+      if (employee.endDate != null && employee.status != Status.deleted) {
+        formerEmployees.add(employee!);
+      }
+      if (employee.endDate == null && employee.status != Status.deleted) {
+        currentEmployees.add(employee!);
+      }
+    }
+
+    return emit(
+      state.copyWith(
+        employees: employees ?? [],
         currentEmployees: currentEmployees,
         previousEmployees: formerEmployees,
       ),
     );
   }
 
-  void addEmployee({required Employee employee}) {
-    var employees = List.of(state.employees);
-    var currentEmployees = List.of(state.currentEmployees);
-    var formerEmployees = List.of(state.previousEmployees);
+  void deleteEmployee({required Employee employee}) async {
+    await databaseService.updateEmployeeStatus(
+      uuid: employee.uuid,
+      status: Status.deleted,
+    );
 
-    employees.add(employee);
+    final employees = await databaseService.fetchActiveEmployees();
 
-    if (employee.endDate != null) {
-      formerEmployees.add(employee);
+    var currentEmployees = <Employee>[];
+    var formerEmployees = <Employee>[];
+
+    for (final employee in (employees ?? [])) {
+      if (employee.endDate != null && employee.status != Status.deleted) {
+        formerEmployees.add(employee!);
+      }
+      if (employee.endDate == null && employee.status != Status.deleted) {
+        currentEmployees.add(employee!);
+      }
     }
-
-    if (employee.endDate == null) {
-      currentEmployees.add(employee);
-    }
-
     return emit(
       state.copyWith(
-        employees: employees,
-        currentEmployees: currentEmployees,
-        previousEmployees: formerEmployees,
-      ),
-    );
-  }
-
-  void deleteEmployee({required Employee employee}) {
-    var employees = List.of(state.employees);
-    var currentEmployees = List.of(state.currentEmployees);
-    var formerEmployees = List.of(state.previousEmployees);
-
-    if (employee.endDate != null) {
-      formerEmployees.removeWhere((element) => element == employee);
-    }
-
-    if (employee.endDate == null) {
-      currentEmployees.removeWhere((element) => element == employee);
-    }
-
-    final updatedEmployee = employees
-        .where(
-          (element) => element == employee,
-        )
-        .first;
-    // .copyWith(
-    //   status: Status.deleted,
-    // );
-
-    employees.removeWhere(
-      (element) => element == employee,
-    );
-    employees.add(updatedEmployee);
-
-    return emit(
-      state.copyWith(
-        employees: employees,
+        employees: employees ?? [],
         currentEmployees: currentEmployees,
         previousEmployees: formerEmployees,
         onDelete: true,
@@ -120,35 +94,29 @@ class AppCubit extends Cubit<AppState> {
     );
   }
 
-  void undoDelete({required String uuid}) {
-    var employees = List.of(state.employees);
-    var currentEmployees = List.of(state.currentEmployees);
-    var formerEmployees = List.of(state.previousEmployees);
-
-    final updatedEmployee = employees
-        .where(
-          (element) => element.uuid == uuid,
-        )
-        .first;
-    // .copyWith(
-    //   status: Status.active,
-    // );
-
-    employees.removeWhere(
-      (element) => element.uuid == uuid,
+  void undoDelete({required String uuid}) async {
+    await databaseService.updateEmployeeStatus(
+      uuid: uuid,
+      status: Status.active,
     );
-    employees.add(updatedEmployee);
 
-    if (updatedEmployee.endDate != null) {
-      formerEmployees.add(updatedEmployee);
-    }
-    if (updatedEmployee.endDate == null) {
-      currentEmployees.add(updatedEmployee);
+    final employees = await databaseService.fetchActiveEmployees();
+
+    var currentEmployees = <Employee>[];
+    var formerEmployees = <Employee>[];
+
+    for (final employee in (employees ?? [])) {
+      if (employee.endDate != null && employee.status != Status.deleted) {
+        formerEmployees.add(employee!);
+      }
+      if (employee.endDate == null && employee.status != Status.deleted) {
+        currentEmployees.add(employee!);
+      }
     }
 
     return emit(
       state.copyWith(
-        employees: employees,
+        employees: employees ?? [],
         currentEmployees: currentEmployees,
         previousEmployees: formerEmployees,
       ),
@@ -162,48 +130,34 @@ class AppCubit extends Cubit<AppState> {
     required Designation designation,
     required DateTime startDate,
     required DateTime? endDate,
-  }) {
-    var employees = List.of(state.employees);
-    var currentEmployees = List.of(state.currentEmployees);
-    var formerEmployees = List.of(state.previousEmployees);
+  }) async {
+    final newEmployee = Employee()
+      ..uuid = employee.uuid
+      ..status = employee.status
+      ..designation = designation
+      ..name = name
+      ..startDate = startDate
+      ..endDate = endDate;
 
-    var selectedEmployee = employees
-        .where(
-          (element) => element.uuid == employee.uuid,
-        )
-        .first;
+    await databaseService.updateEmployee(employee: newEmployee);
 
-    final updatedEmployee = selectedEmployee;
-    // .copyWith(
-    //   name: name,
-    //   designation: designation,
-    //   startDate: startDate,
-    //   endDate: endDate,
-    // );
+    final employees = await databaseService.fetchActiveEmployees();
 
-    employees.removeWhere(
-      (element) => element.uuid == employee.uuid,
-    );
-    employees.add(updatedEmployee);
+    var currentEmployees = <Employee>[];
+    var formerEmployees = <Employee>[];
 
-    if (employee.endDate != null) {
-      formerEmployees.removeWhere((element) => element.uuid == employee.uuid);
-    }
-
-    if (employee.endDate == null) {
-      currentEmployees.removeWhere((element) => element.uuid == employee.uuid);
-    }
-
-    if (updatedEmployee.endDate != null) {
-      formerEmployees.add(updatedEmployee);
-    }
-    if (updatedEmployee.endDate == null) {
-      currentEmployees.add(updatedEmployee);
+    for (final employee in (employees ?? [])) {
+      if (employee.endDate != null && employee.status != Status.deleted) {
+        formerEmployees.add(employee!);
+      }
+      if (employee.endDate == null && employee.status != Status.deleted) {
+        currentEmployees.add(employee!);
+      }
     }
 
     return emit(
       state.copyWith(
-        employees: employees,
+        employees: employees ?? [],
         currentEmployees: currentEmployees,
         previousEmployees: formerEmployees,
       ),

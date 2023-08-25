@@ -49,6 +49,14 @@ class AppUtils {
     return false;
   }
 
+  static bool isSameDay(DateTime? one, DateTime? two) {
+    if (one == null || two == null) return false;
+    if (one.day == two.day && one.month == two.month && one.year == two.year) {
+      return false;
+    }
+    return false;
+  }
+
   static bool isNextMonday(DateTime? date) {
     if (date == null) return false;
 

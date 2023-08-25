@@ -20,6 +20,7 @@ mixin _$AppState {
   List<Employee> get currentEmployees => throw _privateConstructorUsedError;
   List<Employee> get previousEmployees => throw _privateConstructorUsedError;
   bool get onDelete => throw _privateConstructorUsedError;
+  bool get isLoading => throw _privateConstructorUsedError;
   String? get lastDeletedUuid => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -37,6 +38,7 @@ abstract class $AppStateCopyWith<$Res> {
       List<Employee> currentEmployees,
       List<Employee> previousEmployees,
       bool onDelete,
+      bool isLoading,
       String? lastDeletedUuid});
 }
 
@@ -57,6 +59,7 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
     Object? currentEmployees = null,
     Object? previousEmployees = null,
     Object? onDelete = null,
+    Object? isLoading = null,
     Object? lastDeletedUuid = freezed,
   }) {
     return _then(_value.copyWith(
@@ -75,6 +78,10 @@ class _$AppStateCopyWithImpl<$Res, $Val extends AppState>
       onDelete: null == onDelete
           ? _value.onDelete
           : onDelete // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isLoading: null == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
               as bool,
       lastDeletedUuid: freezed == lastDeletedUuid
           ? _value.lastDeletedUuid
@@ -96,6 +103,7 @@ abstract class _$$_AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res> {
       List<Employee> currentEmployees,
       List<Employee> previousEmployees,
       bool onDelete,
+      bool isLoading,
       String? lastDeletedUuid});
 }
 
@@ -114,6 +122,7 @@ class __$$_AppStateCopyWithImpl<$Res>
     Object? currentEmployees = null,
     Object? previousEmployees = null,
     Object? onDelete = null,
+    Object? isLoading = null,
     Object? lastDeletedUuid = freezed,
   }) {
     return _then(_$_AppState(
@@ -133,6 +142,10 @@ class __$$_AppStateCopyWithImpl<$Res>
           ? _value.onDelete
           : onDelete // ignore: cast_nullable_to_non_nullable
               as bool,
+      isLoading: null == isLoading
+          ? _value.isLoading
+          : isLoading // ignore: cast_nullable_to_non_nullable
+              as bool,
       lastDeletedUuid: freezed == lastDeletedUuid
           ? _value.lastDeletedUuid
           : lastDeletedUuid // ignore: cast_nullable_to_non_nullable
@@ -149,6 +162,7 @@ class _$_AppState implements _AppState {
       final List<Employee> currentEmployees = const <Employee>[],
       final List<Employee> previousEmployees = const <Employee>[],
       required this.onDelete,
+      required this.isLoading,
       this.lastDeletedUuid})
       : _employees = employees,
         _currentEmployees = currentEmployees,
@@ -186,11 +200,13 @@ class _$_AppState implements _AppState {
   @override
   final bool onDelete;
   @override
+  final bool isLoading;
+  @override
   final String? lastDeletedUuid;
 
   @override
   String toString() {
-    return 'AppState(employees: $employees, currentEmployees: $currentEmployees, previousEmployees: $previousEmployees, onDelete: $onDelete, lastDeletedUuid: $lastDeletedUuid)';
+    return 'AppState(employees: $employees, currentEmployees: $currentEmployees, previousEmployees: $previousEmployees, onDelete: $onDelete, isLoading: $isLoading, lastDeletedUuid: $lastDeletedUuid)';
   }
 
   @override
@@ -206,6 +222,8 @@ class _$_AppState implements _AppState {
                 .equals(other._previousEmployees, _previousEmployees) &&
             (identical(other.onDelete, onDelete) ||
                 other.onDelete == onDelete) &&
+            (identical(other.isLoading, isLoading) ||
+                other.isLoading == isLoading) &&
             (identical(other.lastDeletedUuid, lastDeletedUuid) ||
                 other.lastDeletedUuid == lastDeletedUuid));
   }
@@ -217,6 +235,7 @@ class _$_AppState implements _AppState {
       const DeepCollectionEquality().hash(_currentEmployees),
       const DeepCollectionEquality().hash(_previousEmployees),
       onDelete,
+      isLoading,
       lastDeletedUuid);
 
   @JsonKey(ignore: true)
@@ -232,6 +251,7 @@ abstract class _AppState implements AppState {
       final List<Employee> currentEmployees,
       final List<Employee> previousEmployees,
       required final bool onDelete,
+      required final bool isLoading,
       final String? lastDeletedUuid}) = _$_AppState;
 
   @override
@@ -242,6 +262,8 @@ abstract class _AppState implements AppState {
   List<Employee> get previousEmployees;
   @override
   bool get onDelete;
+  @override
+  bool get isLoading;
   @override
   String? get lastDeletedUuid;
   @override

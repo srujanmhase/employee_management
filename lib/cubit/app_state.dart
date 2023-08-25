@@ -7,6 +7,7 @@ class AppState with _$AppState {
     @Default(<Employee>[]) List<Employee> currentEmployees,
     @Default(<Employee>[]) List<Employee> previousEmployees,
     required bool onDelete,
+    required bool isLoading,
     String? lastDeletedUuid,
   }) = _AppState;
 }

@@ -1,11 +1,10 @@
 import 'package:employee_management/cubit/app_cubit.dart';
+import 'package:employee_management/services/database/local_database_adapter.dart';
 import 'package:employee_management/services/router/router.dart';
-import 'package:employee_management/services/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  ServiceLocator.init();
   runApp(const MyApp());
 }
 
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AppCubit(),
+      create: (context) => AppCubit(LocalDatabaseAdapter()),
       child: MaterialApp.router(
         title: 'Employee Management',
         theme: ThemeData(
